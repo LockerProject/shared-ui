@@ -138,7 +138,7 @@ handlers.Explore.Filter = function(params) {
     generateBreadCrumbs({filters:breadcrumbs}, function(appHTML) {
       $('#Explore #Filter').html(appHTML);
       if(!(apps.length > 0)) {
-        $('#Explore #Filter').append("<div id='no-results'>No app like that exists...yet. Why don't you <a href='#' class='orange iframeLink' data-id='Create'>create the first</a>?</div>");
+        $('#Explore #Filter').append("<div id='no-results'>No app like that exists...yet. Why don't you <a href='#' class='orange iframeLink' data-id='About-ForDevelopers'>create the first</a>?</div>");
       } else {
         generateAppsHtml(apps, function(html) {
           $('#Explore #Filter').append(html);
