@@ -4,7 +4,7 @@ var registry = {};
 var cache = {};
 registry.getAllApps = function(callback) {
   if(cache.allApps) return callback(cache.allApps, true);
-  $.getJSON(baseUrl + '/apps/_view/Apps', function(data, success) {
+  doGet({}, function(data, success) {
     if(!success) return callback(data, success);
     registry.getAllConnectors(function(connectors, success) {
       data = data.rows;
@@ -16,6 +16,10 @@ registry.getAllApps = function(callback) {
       });
     })
   });
+}
+
+function doGet(params, callback) {
+    $.getJSON(baseUrl + '/apps/_view/Apps', params, callback);
 }
 
 registry.getApp = function(appName, callback) {
@@ -62,8 +66,10 @@ registry.getAllConnectors = function(callback) {
 
 function getMyApps(callback, force) {
   if(cache.myApps !== undefined && !force) return callback(cache.myApps, true);
-  $.getJSON('/registry/added', function(myApps, success) {
-    if(!success) return callback(myApps, success);
+  $.getJSON('/map', function(map, success) {
+    if(!success) return callback(map, success);
+    var myApps = {};
+    for(var i in map) if(map[i].type === 'app') myApps[i] = map[i];
     cache.myApps = myApps;
     if(typeof callback === 'function') callback(myApps, success);
   }).error(function() {
