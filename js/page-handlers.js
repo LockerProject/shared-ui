@@ -14,6 +14,10 @@ $(document).ready(function() {
     loadDiv($(this).data('id'));
     return false;
   });
+  
+  $(window).scroll(function(e) {
+    if(getRowsBelowFold() - getAppCardRows() < 0 && getCurrentSection() === 'Featured') getFeaturedPage();
+  });
 });
 
 function filterCheckboxClick(element) {
@@ -97,26 +101,40 @@ function splitApp(app) {
 
 handlers.Explore = {};
 handlers.Explore.Featured = function() {
-  registry.getAllApps(function(appsObj) {
+  $('#Explore #Featured').html('');
+  getFeaturedPage();
+}
+
+var gettingPage = false;
+function getFeaturedPage() {
+  if(gettingPage) return;
+  gettingPage = true;
+  registry.getAllApps(getPage(), function(appsObj) {
     var apps = [];
     for(var i in appsObj) apps.push(appsObj[i]);
     generateAppsHtml(apps, function(html) {
-      $('#Explore #Featured').html(html);
-    })
-  })
+      $('#Explore #Featured').append(html);
+      gettingPage = false;
+    });
+  });
 }
 
 handlers.Explore.Author = function(params) {
+  $('#Explore #Author').html('');
+  generateBreadCrumbs({author:params.author},function(appHTML) {
+    $('#Explore #Author').html(appHTML);
+    getAuthorPage(params);
+  })
+}
+
+function getAuthorPage(params) {
   registry.getByAuthor(params.author, function(appsObj) {
     var apps = [];
     for(var i in appsObj) apps.push(appsObj[i]);
-    generateBreadCrumbs({author:params.author},function(appHTML) {
-      $('#Explore #Author').html(appHTML);
-      generateAppsHtml(apps, function(html) {
-        $('#Explore #Author').append(html);
-      })
-    })
-  })
+    generateAppsHtml(apps, function(html) {
+      $('#Explore #Author').append(html);
+    });
+  });
 }
 
 handlers.Explore.Filter = function(params) {
@@ -174,4 +192,84 @@ function appCardHover(e) {
   } else {
     $(e.currentTarget).find('.screenshot').stop().animate({'top': '0px'});
   }
+}
+
+
+// lazy loading
+var loadedCallback = {
+  
+};
+
+function getPage() {
+  var skip = getDisplayedAppCards();
+  var limit = getNextPageSize();
+  return {skip:skip, limit:limit};
+}
+
+function getCurrentSection() {
+  return $('div#appFrame #Explore .selected-section').attr('id');
+}
+
+var appCardSelector = 'div#appFrame #Explore .app-card';
+function getAppCardHeight() {
+  var appCardHeight = $(appCardSelector).outerHeight(true);
+  if(!(appCardHeight && appCardHeight > 10)) appCardHeight = 138;
+  return appCardHeight;
+}
+
+function getAppCardWidth() {
+  var appCardWidth = $(appCardSelector).outerWidth(true);
+  if(!(appCardWidth && appCardWidth > 20)) appCardWidth = 334;
+  return appCardWidth;
+}
+
+function getAppCardColumns() {
+    var appCardWidth = getAppCardWidth();
+    var divWidth = $('div#appFrame').width();
+    return Math.floor(divWidth/appCardWidth);
+}
+
+function getAppCardRows() {
+    var appCardHeight = getAppCardHeight();
+    var displayHeight = getDisplayHeight();
+    return Math.floor(displayHeight/appCardHeight);
+}
+
+function getDisplayedAppCards() {
+    return $('div#appFrame #Explore .selected-section .app-card').length;
+}
+
+function getPageSize() {
+    return getAppCardColumns() * (getAppCardRows() + 2);
+}
+
+function getNextPageSize() {
+    var columns = getAppCardColumns();
+    var mod = getDisplayedAppCards() % columns;
+    if(mod > 0) mod = columns - mod;
+    return mod + getPageSize();
+}
+
+function getDisplayHeight() {
+  var displayHeight = window.innerHeight - $('header').height();
+  if(displayHeight < 1) displayHeight = 0;
+  return displayHeight;
+}
+
+function getTotalHeight() {
+  var totalHeight = window.outerHeight - $('header').height();
+  if(totalHeight < 1) totalHeight = 0;
+  return totalHeight;
+}
+function getDivHeight() {
+  return $('div#appFrame #Explore').height();
+}
+
+function getRowsBelowFold() {
+  var appCardHeight = getAppCardHeight();
+  var pageBottom = window.scrollY + getDisplayHeight();
+  var totalRows = Math.floor(getDisplayedAppCards() / getAppCardColumns()) + 1;
+  var totalHeight = totalRows * appCardHeight;
+  var belowFold = totalHeight - pageBottom;
+  return Math.floor(belowFold/appCardHeight);
 }

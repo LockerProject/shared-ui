@@ -2,16 +2,20 @@ var baseUrl = "https://burrow.singly.com/registry/_design";
 
 var registry = {};
 var cache = {};
-registry.getAllApps = function(callback) {
-  if(cache.allApps) return callback(cache.allApps, true);
-  doGet({}, function(data, success) {
+registry.getAllApps = function(params, callback) {
+  if(!callback && typeof params === 'function') {
+    callback = params;
+    params = undefined;
+    if(cache.allApps) return callback(cache.allApps, true);
+  }
+  doGet(params || {}, function(data, success) {
     if(!success) return callback(data, success);
     registry.getAllConnectors(function(connectors, success) {
       data = data.rows;
       var apps = {};
       for(var i in data) apps[data[i].value.name] = data[i].value;
       flagMine(apps, function() {
-        cache.allApps = apps;
+        if(!params) cache.allApps = apps;
         callback(apps, success);
       });
     })
