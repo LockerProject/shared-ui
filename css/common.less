@@ -59,6 +59,7 @@ a {
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 1px;
+  cursor: pointer;
 }
 .action-button:hover {
   border-color: #0070BB;
@@ -73,7 +74,9 @@ a {
 }
 .action-button:active,
 .action-button:disabled,
-.action-button.disabled {
+.action-button.disabled,
+.action-button:disabled:hover,
+.action-button.disabled:hover {
   border-color: #0B943B;
   background: #82c822; /* Old browsers */
   background: -moz-linear-gradient(top,  #82c822 0%, #39b54a 30%, #39b54a 70%, #71c143 100%); /* FF3.6+ */
@@ -85,6 +88,7 @@ a {
   filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='#82c822', endColorstr='#71c143',GradientType=0 )"; /* IE6-9 */
   opacity: .6;
   filter: ~"alpha(opacity = 60)";
+  cursor: default;
 }
 
 /* header section */
@@ -203,7 +207,7 @@ aside {
   }
 
   .installed {
-    opacity: .5
+    opacity: .5;
   }
 
   .app-details {
@@ -225,6 +229,10 @@ aside {
 
   label {
     margin-left: 3px;
+  }
+
+  img {
+    margin-right: 2px;
   }
 }
 
