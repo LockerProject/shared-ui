@@ -101,18 +101,19 @@ function splitApp(app) {
 
 handlers.Explore = {};
 handlers.Explore.Featured = function() {
-  $('#Explore #Featured').html('');
+  showLoading('Featured');
   getFeaturedPage();
 }
 
 var gettingPage = false;
-function getFeaturedPage() {
+function getFeaturedPage(showsLoading) {
   if(gettingPage) return;
   gettingPage = true;
   registry.getAllApps(getPage(), function(appsObj) {
     var apps = [];
     for(var i in appsObj) apps.push(appsObj[i]);
     generateAppsHtml(apps, function(html) {
+      clearLoading('Featured');
       $('#Explore #Featured').append(html);
       gettingPage = false;
     });
@@ -120,24 +121,26 @@ function getFeaturedPage() {
 }
 
 handlers.Explore.Author = function(params) {
-  $('#Explore #Author').html('');
-  generateBreadCrumbs({author:params.author},function(appHTML) {
-    $('#Explore #Author').html(appHTML);
-    getAuthorPage(params);
+  showLoading('Author');
+  generateBreadCrumbs({author:params.author},function(breadcrumbHTML) {
+    getAuthorPage(params, breadcrumbHTML);
   })
 }
 
-function getAuthorPage(params) {
+function getAuthorPage(params, breadcrumbHTML) {
   registry.getByAuthor(params.author, function(appsObj) {
     var apps = [];
     for(var i in appsObj) apps.push(appsObj[i]);
     generateAppsHtml(apps, function(html) {
+      clearLoading('Author');
+      if(breadcrumbHTML) $('#Explore #Author').html(breadcrumbHTML);
       $('#Explore #Author').append(html);
     });
   });
 }
 
 handlers.Explore.Filter = function(params) {
+  showLoading('Filter');
   var filters = {};
   if(params.types) {
     filters.types = params.types.split(',');
@@ -154,14 +157,15 @@ handlers.Explore.Filter = function(params) {
     for(var i in filters.types) breadcrumbs.push({type:filters.types[i], name:prettyName(filters.types[i])});
     for(var i in filters.services) breadcrumbs.push({service:filters.services[i], name:prettyName(filters.services[i])});
     generateBreadCrumbs({filters:breadcrumbs}, function(appHTML) {
-      $('#Explore #Filter').html(appHTML);
-      if(!(apps.length > 0)) {
-        $('#Explore #Filter').append("<div id='no-results'>No app like that exists...yet. Why don't you <a href='#' class='orange iframeLink' data-id='About-ForDevelopers'>create the first</a>?</div>");
-      } else {
-        generateAppsHtml(apps, function(html) {
-          $('#Explore #Filter').append(html);
-        })
-      }
+      generateAppsHtml(apps, function(html) {
+        if(!html) {
+          $('#Explore #Filter').append("<div id='no-results'>No app like that exists...yet. Why don't you <a href='#' class='orange iframeLink' data-id='About-ForDevelopers'>create the first</a>?</div>");
+        } else {
+            clearLoading('Filter');
+            $('#Explore #Filter').html(appHTML);
+            $('#Explore #Filter').append(html);
+        }
+      })
     })
   })
 }
@@ -272,4 +276,22 @@ function getRowsBelowFold() {
   var totalHeight = totalRows * appCardHeight;
   var belowFold = totalHeight - pageBottom;
   return Math.floor(belowFold/appCardHeight);
+}
+
+
+// loading placeholder
+function showLoading(section) {
+  isLoading[section] = true;
+  setTimeout(function() {
+    if(isLoading[section]) $('#Explore #' + section).html('<img src="common/img/loading.gif">');
+  }, 1000);
+}
+
+var isLoading = {};
+var timeouts = {};
+function clearLoading(section) {
+  if(isLoading[section]) {
+    isLoading[section] = false;
+    $('#Explore #' + section).html('');
+  }
 }
