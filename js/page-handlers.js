@@ -43,8 +43,8 @@ function filterCheckboxClick(element) {
 
 function loadDiv(app) {
   var info = splitApp(app);
-  $('#appFrame').hide();
-  $('#appDiv').show();
+  $('.app-container').hide();
+  $('.app-container#appDiv').show();
   $('.iframeLink,.your-apps,header div.nav a').removeClass('blue');
   $(".selected-section").removeClass('selected-section');
   app = info.app;
