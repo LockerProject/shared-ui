@@ -218,9 +218,9 @@ function getAppCardWidth() {
 }
 
 function getAppCardColumns() {
-    var appCardWidth = getAppCardWidth();
-    var divWidth = $('#appDiv').width();
-    return Math.floor(divWidth/appCardWidth);
+  var appCardWidth = getAppCardWidth();
+  var divWidth = $('#appDiv').width();
+  return Math.floor(divWidth/appCardWidth);
 }
 
 function getAppCardRows() {

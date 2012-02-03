@@ -83,12 +83,11 @@ function getInstalledApps(callback, force) {
 }
 
 function flagInstalled(apps, callback) {
+  if(!loggedIn) return callback();
   getInstalledApps(function(installedApps, success) {
     for(var i in apps) {
-      if(loggedIn) {
-        apps[i].actions = {add:true};
-        if(installedApps[i]) apps[i].actions.add = false;
-      }
+      apps[i].actions = {add:true};
+      if(installedApps[i]) apps[i].actions.add = false;
     }
     callback();
   });
