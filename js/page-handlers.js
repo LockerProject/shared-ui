@@ -44,7 +44,6 @@ function filterCheckboxClick(element) {
 
 function loadDiv(app) {
   var info = splitApp(app);
-  if(info.topSection === 'AppGallery' && getCurrentSection() === info.subSection) return;
   $('iframe#appFrame').hide();
   $('div#appFrame').show();
   $('.iframeLink,.your-apps,header div.nav a').removeClass('blue');
