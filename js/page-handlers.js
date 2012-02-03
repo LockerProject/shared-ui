@@ -5,8 +5,7 @@ var prettyNames = {
 var handlers = {};
 
 $(document).ready(function() {
-  $('body').delegate('.app-card', 'hover', appCardHover)
-  .delegate('.sidenav-items input', 'click', filterCheckboxClick)
+  $('body').delegate('.sidenav-items input', 'click', filterCheckboxClick)
   .delegate('.app-card', 'click', function() {
     loadDiv('AppGallery-Details?app=' + $(this).data('id'));
     return false;
@@ -189,16 +188,6 @@ function prettyName(str) {
 function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
-
-
-function appCardHover(e) {
-  if (e.type === 'mouseenter') {
-    $(e.currentTarget).find('.screenshot').stop().animate({'top': '100px'});
-  } else {
-    $(e.currentTarget).find('.screenshot').stop().animate({'top': '0px'});
-  }
-}
-
 
 // lazy loading
 var loadedCallback = {
