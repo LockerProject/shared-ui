@@ -1,1 +1,1 @@
-node compile.js app.html appDetails.html breadcrumbs.html
+node compile.js *.html ../../templates/*.html

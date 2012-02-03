@@ -14,7 +14,7 @@ registry.getAllApps = function(params, callback) {
       data = data.rows;
       var apps = {};
       for(var i in data) apps[data[i].value.name] = data[i].value;
-      flagMine(apps, function() {
+      flagInstalled(apps, function() {
         if(!params) cache.allApps = apps;
         callback(apps, success);
       });
@@ -68,7 +68,7 @@ registry.getAllConnectors = function(callback) {
 }
 
 
-function getMyApps(callback, force) {
+function getInstalledApps(callback, force) {
   if(cache.myApps !== undefined && !force) return callback(cache.myApps, true);
   $.getJSON('/map', function(map, success) {
     if(!success) return callback(map, success);
@@ -82,12 +82,12 @@ function getMyApps(callback, force) {
   });
 }
 
-function flagMine(apps, callback) {
-  getMyApps(function(myApps, success) {
+function flagInstalled(apps, callback) {
+  getInstalledApps(function(installedApps, success) {
     for(var i in apps) {
       if(loggedIn) {
         apps[i].actions = {add:true};
-        if(myApps[i]) apps[i].actions.add = false;
+        if(installedApps[i]) apps[i].actions.add = false;
       }
     }
     callback();
@@ -109,12 +109,41 @@ registry.getUnConnectedServices = function(app, callback) {
   });
 }
 
+registry.getConnectedServices = function(app, callback) {
+  if(!app.repository.uses) return callback([]);
+  registry.getAllConnectors(function(allConnectors) {
+    registry.getMyConnectors(function(myConnectors) {
+      if(myConnectors === null) return callback([]);
+      var connected = [];
+      var svcs = app.repository.uses.services;
+      for(var i in svcs) {
+        if(myConnectors[svcs[i]] && allConnectors[svcs[i]]) connected.push(allConnectors[svcs[i]]);
+      }
+      callback(connected);
+    });
+  });
+}
+
+registry.getMyAuthoredApps = function(callback, force) {
+  if(cache.myAuthoredApps !== undefined && !force) return callback(cache.myAuthoredApps, true);
+  $.getJSON('/map', function(map, success) {
+    if(!success) return callback(map, success);
+    var myApps = {};                                             // this isn't great
+    for(var i in map) if(map[i].type === 'app' && map[i].srcdir.indexOf('Me/github/') === 0) myApps[i] = map[i];
+    cache.myAuthoredApps = myApps;
+    if(typeof callback === 'function') callback(myApps, success);
+  }).error(function() {  
+    cache.myAuthoredApps = null;
+    if(typeof callback === 'function') callback(null);
+  });
+}
+
 registry.getMyConnectors = function(callback, force) {
   if(cache.myConnectors !== undefined && !force) return callback(cache.myConnectors, true);
   $.getJSON('/map', function(map, success) {
     if(!success) return callback(map, success);
     var myConnectors = {};
-    for(var i in map) if(map[i].type === 'connector') myConnectors[i] = map[i];
+    for(var i in map) if(map[i].type === 'connector' && map[i].authed) myConnectors[i] = map[i];
     cache.myConnectors = myConnectors;
     if(typeof callback === 'function') callback(myConnectors, success);
   }).error(function() {  

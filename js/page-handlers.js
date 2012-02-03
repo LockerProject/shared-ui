@@ -44,8 +44,8 @@ function filterCheckboxClick(element) {
 
 function loadDiv(app) {
   var info = splitApp(app);
-  $('iframe#appFrame').hide();
-  $('div#appFrame').show();
+  $('#appFrame').hide();
+  $('#appDiv').show();
   $('.iframeLink,.your-apps,header div.nav a').removeClass('blue');
   $(".selected-section").removeClass('selected-section');
   app = info.app;
@@ -53,8 +53,8 @@ function loadDiv(app) {
   $('.iframeLink[data-id="' + info.app + '"]').addClass('blue');
   $('header div a[data-id="' + info.topSection + '"]').addClass('blue');
   $(".sidenav #" + info.topSection).addClass('selected-section');
-  $("div#appFrame #" + info.topSection).addClass('selected-section');
-  $("div#appFrame #" + info.topSection + " #" + info.subSection).addClass('selected-section');
+  $("#appDiv #" + info.topSection).addClass('selected-section');
+  $("#appDiv #" + info.topSection + " #" + info.subSection).addClass('selected-section');
   $('.sidenav-items input').attr('checked', false);
   if(handlers[info.topSection]) {
     if(typeof handlers[info.topSection] === 'function') {
@@ -212,10 +212,10 @@ function getPage() {
 }
 
 function getCurrentSection() {
-  return $('div#appFrame #AppGallery .selected-section').attr('id');
+  return $('#appDiv #AppGallery .selected-section').attr('id');
 }
 
-var appCardSelector = 'div#appFrame #AppGallery .app-card';
+var appCardSelector = '#appDiv #AppGallery .app-card';
 function getAppCardHeight() {
   var appCardHeight = $(appCardSelector).outerHeight(true);
   if(!(appCardHeight && appCardHeight > 10)) appCardHeight = 138;
@@ -230,7 +230,7 @@ function getAppCardWidth() {
 
 function getAppCardColumns() {
     var appCardWidth = getAppCardWidth();
-    var divWidth = $('div#appFrame').width();
+    var divWidth = $('#appDiv').width();
     return Math.floor(divWidth/appCardWidth);
 }
 
@@ -241,7 +241,7 @@ function getAppCardRows() {
 }
 
 function getDisplayedAppCards() {
-    return $('div#appFrame #AppGallery .selected-section .app-card').length;
+    return $('#appDiv #AppGallery .selected-section .app-card').length;
 }
 
 function getPageSize() {
@@ -267,7 +267,7 @@ function getTotalHeight() {
   return totalHeight;
 }
 function getDivHeight() {
-  return $('div#appFrame #AppGallery').height();
+  return $('#appDiv #AppGallery').height();
 }
 
 function getRowsBelowFold() {
