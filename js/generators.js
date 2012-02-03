@@ -11,7 +11,7 @@ function generateAppsHtml(apps, callback, html) {
 }
 
 function generateAppDetailsHtml(app, callback) {
-  app.updated = moment(new Date(app.time.modified)).fromNow();
+  if(app.time) app.updated = moment(new Date(app.time.modified)).fromNow();
   // if(app.repository.uses) {
   //     var types = [];
   //     for(var i in app.repository.uses.types) types.push(prettyName(app.repository.uses.types[i]));

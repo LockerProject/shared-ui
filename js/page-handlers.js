@@ -8,7 +8,7 @@ $(document).ready(function() {
   $('body').delegate('.app-card', 'hover', appCardHover)
   .delegate('.sidenav-items input', 'click', filterCheckboxClick)
   .delegate('.app-card', 'click', function() {
-    loadDiv('Explore-Details?app=' + $(this).data('id'));
+    loadDiv('AppGallery-Details?app=' + $(this).data('id'));
     return false;
   }).delegate('.iframeLink', 'click', function() {
     loadDiv($(this).data('id'));
@@ -23,11 +23,11 @@ $(document).ready(function() {
 function filterCheckboxClick(element) {
   var id = $(element.currentTarget).parent().parent().attr('id');
   var checked = $('#' + id + ' input:checked');
+  checked
   if (checked.length == 0) {
-    $('.your-apps').click();
+    loadDiv('AppGallery-Featured');
   } else {
-    $('.your-apps').removeClass('blue');
-    var app = "Explore-Filter?";
+    var app = "AppGallery-Filter?";
     var types = [];
     var services = [];
     $('#types').find(checked).each(function(i, elem) {
@@ -44,11 +44,12 @@ function filterCheckboxClick(element) {
 }
 
 function loadDiv(app) {
+  var info = splitApp(app);
+  if(info.topSection === 'AppGallery' && getCurrentSection() === info.subSection) return;
   $('iframe#appFrame').hide();
   $('div#appFrame').show();
   $('.iframeLink,.your-apps,header div.nav a').removeClass('blue');
   $(".selected-section").removeClass('selected-section');
-  var info = splitApp(app);
   app = info.app;
   window.location.hash = info.app;
   $('.iframeLink[data-id="' + info.app + '"]').addClass('blue');
@@ -99,8 +100,10 @@ function splitApp(app) {
   return {app:app, topSection:topSection, subSection:subSection, params:params};
 }
 
-handlers.Explore = {};
-handlers.Explore.Featured = function() {
+handlers.AppGallery = {};
+handlers.AppGallery.Featured = function() {
+  // if(getCurrentSection() == 'Featured') return;
+  $('#AppGallery #Featured').html('');
   showLoading('Featured');
   getFeaturedPage();
 }
@@ -114,13 +117,13 @@ function getFeaturedPage(showsLoading) {
     for(var i in appsObj) apps.push(appsObj[i]);
     generateAppsHtml(apps, function(html) {
       clearLoading('Featured');
-      $('#Explore #Featured').append(html);
+      $('#AppGallery #Featured').append(html);
       gettingPage = false;
     });
   });
 }
 
-handlers.Explore.Author = function(params) {
+handlers.AppGallery.Author = function(params) {
   showLoading('Author');
   generateBreadCrumbs({author:params.author},function(breadcrumbHTML) {
     getAuthorPage(params, breadcrumbHTML);
@@ -133,13 +136,13 @@ function getAuthorPage(params, breadcrumbHTML) {
     for(var i in appsObj) apps.push(appsObj[i]);
     generateAppsHtml(apps, function(html) {
       clearLoading('Author');
-      if(breadcrumbHTML) $('#Explore #Author').html(breadcrumbHTML);
-      $('#Explore #Author').append(html);
+      if(breadcrumbHTML) $('#AppGallery #Author').html(breadcrumbHTML);
+      $('#AppGallery #Author').append(html);
     });
   });
 }
 
-handlers.Explore.Filter = function(params) {
+handlers.AppGallery.Filter = function(params) {
   showLoading('Filter');
   var filters = {};
   if(params.types) {
@@ -156,26 +159,27 @@ handlers.Explore.Filter = function(params) {
     var breadcrumbs = [];
     for(var i in filters.types) breadcrumbs.push({type:filters.types[i], name:prettyName(filters.types[i])});
     for(var i in filters.services) breadcrumbs.push({service:filters.services[i], name:prettyName(filters.services[i])});
-    generateBreadCrumbs({filters:breadcrumbs}, function(appHTML) {
+    generateBreadCrumbs({filters:breadcrumbs}, function(breadcrumbHTML) {
       generateAppsHtml(apps, function(html) {
         if(!html) {
-          $('#Explore #Filter').append("<div id='no-results'>No app like that exists...yet. Why don't you <a href='#' class='orange iframeLink' data-id='About-ForDevelopers'>create the first</a>?</div>");
+          clearLoading('Filter');
+          $('#AppGallery #Filter').append("<div id='no-results'>No app like that exists...yet. Why don't you <a href='#' class='orange iframeLink' data-id='About-ForDevelopers'>create the first</a>?</div>");
         } else {
-            clearLoading('Filter');
-            $('#Explore #Filter').html(appHTML);
-            $('#Explore #Filter').append(html);
+          clearLoading('Filter');
+          $('#AppGallery #Filter').html(breadcrumbHTML);
+          $('#AppGallery #Filter').append(html);
         }
       })
     })
   })
 }
 
-handlers.Explore.Details = function(params) {
+handlers.AppGallery.Details = function(params) {
   registry.getApp(params.app, function(app) {
     generateBreadCrumbs({app:app},function(appHTML) {
-      $('#Explore #Details').html(appHTML);
+      $('#AppGallery #Details').html(appHTML);
       generateAppDetailsHtml(app, function(html) {
-        $('#Explore #Details').append(html);
+        $('#AppGallery #Details').append(html);
       });
     });
   });
@@ -211,10 +215,10 @@ function getPage() {
 }
 
 function getCurrentSection() {
-  return $('div#appFrame #Explore .selected-section').attr('id');
+  return $('div#appFrame #AppGallery .selected-section').attr('id');
 }
 
-var appCardSelector = 'div#appFrame #Explore .app-card';
+var appCardSelector = 'div#appFrame #AppGallery .app-card';
 function getAppCardHeight() {
   var appCardHeight = $(appCardSelector).outerHeight(true);
   if(!(appCardHeight && appCardHeight > 10)) appCardHeight = 138;
@@ -240,7 +244,7 @@ function getAppCardRows() {
 }
 
 function getDisplayedAppCards() {
-    return $('div#appFrame #Explore .selected-section .app-card').length;
+    return $('div#appFrame #AppGallery .selected-section .app-card').length;
 }
 
 function getPageSize() {
@@ -266,7 +270,7 @@ function getTotalHeight() {
   return totalHeight;
 }
 function getDivHeight() {
-  return $('div#appFrame #Explore').height();
+  return $('div#appFrame #AppGallery').height();
 }
 
 function getRowsBelowFold() {
@@ -283,7 +287,7 @@ function getRowsBelowFold() {
 function showLoading(section) {
   isLoading[section] = true;
   setTimeout(function() {
-    if(isLoading[section]) $('#Explore #' + section).html('<img src="common/img/loading.gif">');
+    if(isLoading[section]) $('#AppGallery #' + section).html('<img src="common/img/loading.gif">');
   }, 1000);
 }
 
@@ -292,6 +296,6 @@ var timeouts = {};
 function clearLoading(section) {
   if(isLoading[section]) {
     isLoading[section] = false;
-    $('#Explore #' + section).html('');
+    $('#AppGallery #' + section).html('');
   }
 }
