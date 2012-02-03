@@ -23,7 +23,6 @@ $(document).ready(function() {
 function filterCheckboxClick(element) {
   var id = $(element.currentTarget).parent().parent().attr('id');
   var checked = $('#' + id + ' input:checked');
-  checked
   if (checked.length == 0) {
     loadDiv('AppGallery-Featured');
   } else {
@@ -102,7 +101,6 @@ function splitApp(app) {
 
 handlers.AppGallery = {};
 handlers.AppGallery.Featured = function() {
-  // if(getCurrentSection() == 'Featured') return;
   $('#AppGallery #Featured').html('');
   showLoading('Featured');
   getFeaturedPage();
