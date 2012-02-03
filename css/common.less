@@ -364,6 +364,17 @@ section {
   background: linear-gradient(top,  #f3f3f3 0%,#ffffff 50%,#ffffff 51%,#f3f3f3 100%); /* W3C */
 }
 
+/* gradient-hover */
+.gradient-hover {
+  background: #ccc; /* Old browsers */
+  background: -moz-linear-gradient(top,  #ccc 0%, #e6e6e6 50%, #e6e6e6 51%, #ccc 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ccc), color-stop(50%,#e6e6e6), color-stop(51%,#e6e6e6), color-stop(100%,#ccc)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #ccc 0%,#e6e6e6 50%,#e6e6e6 51%,#ccc 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #ccc 0%,#e6e6e6 50%,#e6e6e6 51%,#ccc 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #ccc 0%,#e6e6e6 50%,#e6e6e6 51%,#ccc 100%); /* IE10+ */
+  background: linear-gradient(top,  #ccc 0%,#e6e6e6 50%,#e6e6e6 51%,#ccc 100%); /* W3C */
+}
+
 /* breadcrumb */
 .breadcrumb {
   list-style: none;
@@ -417,7 +428,6 @@ section {
   }
 }
 
-
 /* app cards */
 .app-card {
   width: 300px;
@@ -440,15 +450,10 @@ section {
     position: relative;
     width: 124px;
 
-    .description {
-      z-index: 0;
-    }
-
     .screenshot {
       position: absolute;
       top: 0px;
       left: 0px;
-      z-index: 1;
     }
   }
 
@@ -464,20 +469,22 @@ section {
     span {
       margin-right: 5px;
     }
-    input[type=button] {
-      position: absolute;
-      bottom: 10px;
-      left: 0px;
-      width: 140px;
+    .uses {
+      margin-top: 6px;
     }
+    .uses,
     .author {
       font-size: 14px;
     }
-    .oauthLink img {
-      margin-right: 3px;
-      vertical-align: top;
+    .provider-icons img {
+      margin-right: 5px;
+      margin-top: 5px;
     }
   }
+}
+
+.app-card:hover {
+  .gradient-hover;
 }
 
 input[type=button].install {
