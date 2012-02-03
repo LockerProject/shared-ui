@@ -1,17 +1,18 @@
 <div class="app-card gradient" data-id="{app.name}">
   <div class="left-side">
-    <div class="description">{app.description}</div>
     <div class="screenshot" style="top: 0px; "><img src="https://burrow.singly.com/registry/{app.name}/screenshot.png"></div>
   </div>
   <div class="app-info">
     <p class="title">{app.repository.title}</p>
     <p class="author"><a class="orange iframeLink" href="#" data-id="AppGallery-Author?author={app.author.name}">by {app.author.name}</a></p>
     <p class="uses">
-      {?app.repository.uses.types}<span>Uses</span>
+     {?app.repository.uses.types}<span>This app uses:</span>
+        <div class="provider-icons">
         {#app.repository.uses.types}
           <a class="blue iframeLink" href="#" data-id="AppGallery-Filter?
           types={.}">{.}</a>{@sep} + {/sep}
         {/app.repository.uses.types}
+        </div>
       {/app.repository.uses.types}
     </p>
       {?connect}<span>Connect</span>
@@ -34,5 +35,4 @@
         </div>
       {/app.actions}
   </div>
-
 </div>
