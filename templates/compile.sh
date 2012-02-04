@@ -1,5 +1,6 @@
-node compile.js *.html
 if [ -d ../../templates ]
 then
-    node compile.js ../../templates/*.html
+    node compile.js *.html ../../templates/*.html
+else
+    node compile.js *.html
 fi
