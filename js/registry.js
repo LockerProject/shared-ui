@@ -151,6 +151,13 @@ registry.getMyConnectors = function(callback, force) {
   });
 }
 
+registry.getMap = function(callback) {
+  $.getJSON('/map', function(map, success) {
+    if(!success) return callback(new Error(map), success);
+    return callback(undefined, map);
+  });
+}
+
 function isMatch(uses, filters) {
   if(!uses) return false;
   if(filters.services && !arrHasAll(uses.services, filters.services)) return false;
