@@ -68,7 +68,7 @@ registry.getAllConnectors = function(callback) {
 }
 
 
-function getInstalledApps(callback, force) {
+registry.getInstalledApps = function(callback, force) {
   if(cache.myApps !== undefined && !force) return callback(cache.myApps, true);
   $.getJSON('/map', function(map, success) {
     if(!success) return callback(map, success);
@@ -84,7 +84,7 @@ function getInstalledApps(callback, force) {
 
 function flagInstalled(apps, callback) {
   if(!loggedIn) return callback();
-  getInstalledApps(function(installedApps, success) {
+  registry.getInstalledApps(function(installedApps, success) {
     for(var i in apps) {
       apps[i].actions = {add:true};
       if(installedApps[i]) apps[i].actions.add = false;
@@ -93,13 +93,13 @@ function flagInstalled(apps, callback) {
   });
 }
 
-registry.getUnConnectedServices = function(app, callback) {
-  if(!app.repository.uses) return callback([]);
+registry.getUnConnectedServices = function(uses, callback) {
+  if(!uses) return callback([]);
   registry.getAllConnectors(function(allConnectors) {
     registry.getMyConnectors(function(myConnectors) {
       if(myConnectors === null) return callback();
       var unconnected = [];
-      var svcs = app.repository.uses.services;
+      var svcs = uses.services;
       for(var i in svcs) {
         if(!myConnectors[svcs[i]] && allConnectors[svcs[i]]) unconnected.push(allConnectors[svcs[i]]);
       }
@@ -108,13 +108,13 @@ registry.getUnConnectedServices = function(app, callback) {
   });
 }
 
-registry.getConnectedServices = function(app, callback) {
-  if(!app.repository.uses) return callback([]);
+registry.getConnectedServices = function(uses, callback) {
+  if(!uses) return callback([]);
   registry.getAllConnectors(function(allConnectors) {
     registry.getMyConnectors(function(myConnectors) {
       if(myConnectors === null) return callback([]);
       var connected = [];
-      var svcs = app.repository.uses.services;
+      var svcs = uses.services;
       for(var i in svcs) {
         if(myConnectors[svcs[i]] && allConnectors[svcs[i]]) connected.push(allConnectors[svcs[i]]);
       }
@@ -125,15 +125,19 @@ registry.getConnectedServices = function(app, callback) {
 
 registry.getMyAuthoredApps = function(callback, force) {
   if(cache.myAuthoredApps !== undefined && !force) return callback(cache.myAuthoredApps, true);
-  $.getJSON('/map', function(map, success) {
-    if(!success) return callback(map, success);
-    var myApps = {};                                             // this isn't great
-    for(var i in map) if(map[i].type === 'app' && map[i].srcdir.indexOf('Me/github/') === 0) myApps[i] = map[i];
-    cache.myAuthoredApps = myApps;
-    if(typeof callback === 'function') callback(myApps, success);
-  }).error(function() {  
-    cache.myAuthoredApps = null;
-    if(typeof callback === 'function') callback(null);
+  // XXX: I don't like this here -- temas
+  $.getJSON("/synclets/github/getCurrent/profile", function(body, success) {
+      if (body.length > 0 && body[0].login) registry.localAuthor = body[0].login;
+      $.getJSON('/map', function(map, success) {
+        if(!success) return callback(map, success);
+        var myApps = {};                                             // this isn't great
+        for(var i in map) if(map[i].type === 'app' && map[i].srcdir.indexOf('Me/github/') === 0) myApps[i] = map[i];
+        cache.myAuthoredApps = myApps;
+        if(typeof callback === 'function') callback(myApps, success);
+      }).error(function() {  
+        cache.myAuthoredApps = null;
+        if(typeof callback === 'function') callback(null);
+      });
   });
 }
 
