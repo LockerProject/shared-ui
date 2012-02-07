@@ -1,0 +1,22 @@
+<div class="filters">
+ <div class="types">
+  <div>FILTER BY TYPE</div>
+
+  <ul>
+   <li><label><input name="photos" type="checkbox"> Photos</label></li>
+   <li><label><input name="links" type="checkbox"> Links</label></li>
+   <li><label><input name="contacts" type="checkbox"> Contacts</label></li>
+   <li><label><input name="places" type="checkbox"> Locations</label></li>
+  </ul>
+ </div>
+
+ <div class="services">
+  <div>FILTER BY SERVICES</div>
+
+  <ul>
+  {#connectors}
+   <li><label><input name="{handle}" type="checkbox"> {title}</label></li>
+  {/connectors}
+  </ul>
+ </div>
+</div>

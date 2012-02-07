@@ -5,40 +5,66 @@ var prettyNames = {
 var handlers = {};
 
 $(document).ready(function() {
-  $('body').delegate('.sidenav-items input', 'click', filterCheckboxClick)
-  .delegate('.app-card', 'click', function() {
-    loadDiv('AppGallery-Details?app=' + $(this).data('id'));
-    return false;
-  }).delegate('.iframeLink', 'click', function() {
-    loadDiv($(this).data('id'));
-    return false;
-  });
-  
+  $('body')
+    .delegate('.filters input', 'click', filterCheckboxClick)
+    .delegate('.app-card', 'click', function() {
+      loadDiv('AppGallery-Details?app=' + $(this).data('id'));
+      return false;
+    })
+    .delegate('.iframeLink', 'click', function() {
+      loadDiv($(this).data('id'));
+      return false;
+    })
+    .delegate('.filter-visibility', 'click', function() {
+      var container = '#' + $($(this).closest('section')).attr('id');
+      var filters = $('#AppGallery ' + container + ' .filters');
+
+      if (filters.is(':visible')) {
+        $(this).text('Show Filters');
+        filters.hide();
+      } else {
+        $(this).text('Hide Filters');
+        filters.show();
+      }
+
+      return false;
+    });
+
+  // Supports lazy loading of app cards
   $(window).scroll(function(e) {
     if(getRowsBelowFold() - getAppCardRows() < 0 && getCurrentSection() === 'Featured') getFeaturedPage();
   });
 });
 
 function filterCheckboxClick(element) {
-  var id = $(element.currentTarget).parent().parent().attr('id');
-  var checked = $('#' + id + ' input:checked');
-  if (checked.length == 0) {
+  var container = '#' + $($(element.currentTarget).closest('section')).attr('id');
+
+  var checked = $('#AppGallery ' + container + ' .filters input:checked');
+
+  if (checked.length === 0) {
     loadDiv('AppGallery-Featured');
   } else {
     var app = "AppGallery-Filter?";
     var types = [];
     var services = [];
-    $('#types').find(checked).each(function(i, elem) {
-      types.push($(elem).attr('id'));
+
+    $('#AppGallery ' + container + ' .types input:checked').each(function(i, elem) {
+      types.push($(elem).attr('name'));
     });
-    $('#services').find(checked).each(function(i, elem) {
-      services.push($(elem).attr('id'));
+
+    $('#AppGallery ' + container + ' .services input:checked').each(function(i, elem) {
+      services.push($(elem).attr('name'));
     });
-    if(types.length > 0) app += "&types=" + types.join(',');
-    if(services.length > 0) app += "&services=" + services.join(',');
-    loadDiv(app);
+
+    var params = [];
+
+    if(types.length > 0)
+      params.push("types=" + types.join(','));
+    if(services.length > 0)
+      params.push("services=" + services.join(','));
+
+    loadDiv(app + params.join('&'));
   }
-  
 }
 
 function loadDiv(app) {
@@ -101,7 +127,17 @@ handlers.AppGallery = {};
 handlers.AppGallery.Featured = function() {
   $('#AppGallery #Featured').html('');
   showLoading('Featured');
-  getFeaturedPage();
+
+  generateBreadCrumbs({filter: true}, function(breadcrumbHTML) {
+    clearLoading('Featured');
+
+    $('#AppGallery #Featured').append(breadcrumbHTML);
+
+    generateAppFilters(function(filterHTML) {
+      $('#AppGallery #Featured').append(filterHTML);
+        getFeaturedPage();
+    });
+  });
 }
 
 var gettingPage = false;
@@ -110,10 +146,12 @@ function getFeaturedPage(showsLoading) {
   gettingPage = true;
   registry.getAllApps(getPage(), function(appsObj) {
     var apps = [];
+
     for(var i in appsObj) apps.push(appsObj[i]);
+
     generateAppsHtml(apps, function(html) {
-      clearLoading('Featured');
       $('#AppGallery #Featured').append(html);
+
       gettingPage = false;
     });
   });
@@ -123,7 +161,7 @@ handlers.AppGallery.Author = function(params) {
   showLoading('Author');
   generateBreadCrumbs({author:params.author},function(breadcrumbHTML) {
     getAuthorPage(params, breadcrumbHTML);
-  })
+  });
 }
 
 function getAuthorPage(params, breadcrumbHTML) {
@@ -140,34 +178,49 @@ function getAuthorPage(params, breadcrumbHTML) {
 
 handlers.AppGallery.Filter = function(params) {
   showLoading('Filter');
+
   var filters = {};
-  if(params.types) {
+
+  if(params.types)
     filters.types = params.types.split(',');
-    for(var i in filters.types) $('.sidenav-items input[name=' + filters.types[i] + ']').attr('checked', true);
-  } else if(params.services) {
+  if(params.services)
     filters.services = params.services.split(',');
-    for(var i in filters.services) $('.sidenav-items input[name=' + filters.services[i] + ']').attr('checked', true);
-  }
 
   registry.getByFilter(filters, function(appsObj) {
     var apps = [];
-    for(var i in appsObj) apps.push(appsObj[i]);
     var breadcrumbs = [];
+
+    for(var i in appsObj) apps.push(appsObj[i]);
+
     for(var i in filters.types) breadcrumbs.push({type:filters.types[i], name:prettyName(filters.types[i])});
     for(var i in filters.services) breadcrumbs.push({service:filters.services[i], name:prettyName(filters.services[i])});
-    generateBreadCrumbs({filters:breadcrumbs}, function(breadcrumbHTML) {
-      generateAppsHtml(apps, function(html) {
-        if(!html) {
-          clearLoading('Filter');
-          $('#AppGallery #Filter').append("<div id='no-results'>No app like that exists...yet. Why don't you <a href='#' class='orange iframeLink' data-id='About-ForDevelopers'>create the first</a>?</div>");
-        } else {
-          clearLoading('Filter');
-          $('#AppGallery #Filter').html(breadcrumbHTML);
-          $('#AppGallery #Filter').append(html);
+
+    generateBreadCrumbs({filter:true, filters:breadcrumbs}, function(breadcrumbHTML) {
+      clearLoading('Filter');
+
+      $('#AppGallery #Filter').html(breadcrumbHTML);
+
+      generateAppFilters(function(filterHTML) {
+        $('#AppGallery #Filter').append(filterHTML);
+
+        for(var i in filters.types) {
+          $('#AppGallery #Filter input[name=' + filters.types[i] +']').prop('checked', true);
         }
-      })
-    })
-  })
+
+        for(var i in filters.services) {
+          $('#AppGallery #Filter input[name=' + filters.services[i] + ']').prop('checked', true);
+        }
+
+        generateAppsHtml(apps, function(html) {
+          if (!html) {
+            $('#AppGallery #Filter').append("<div id='no-results'>No app like that exists... yet. Why don't you <a href='develop' class='orange'>create the first</a>?</div>");
+          } else {
+            $('#AppGallery #Filter').append(html);
+          }
+        });
+      });
+    });
+  });
 }
 
 handlers.AppGallery.Details = function(params) {

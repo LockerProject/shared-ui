@@ -310,37 +310,6 @@ section {
     height: 375px;
   }
 
-  .action-buttons {
-    float: right;
-    width: 150px;
-    margin-right: 15px;
-
-    input {
-      width: 140px;
-    }
-
-    a {
-      font-size: 14px;
-      height: 24px;
-      background-position: 8px 50%;
-      background-repeat: no-repeat;
-      padding:8px;
-      padding-left: 38px;
-      line-height: 26px;
-      margin: 4px 0px;
-      display:block;
-      border:1px solid #b3b3b3;
-      border-radius: 4px;
-      background-color:white;
-    }
-    a.twitter {
-      background-image: url('img/icons/24px/twitter.png');
-    }
-    a.facebook {
-      background-image: url('img/icons/24px/facebook.png');
-    }
-  }
-
   .title {
     font-size: 20px;
     font-weight: bold;
@@ -357,8 +326,56 @@ section {
   }
 }
 
+.no-background {
+  background: none;
+}
+
 .uses a {
   display: inline;
+}
+
+/* app filters */
+.filters {
+  margin-top: 20px;
+  margin-bottom: 24px;
+  padding: 1em;
+  background-color: #f2f2f2;
+  font-size: 16px;
+
+  div > div {
+    font-size: 14px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #808080;
+  }
+
+  input[type=checkbox] {
+   margin-right: 10px;
+  }
+
+  ul {
+   margin-top: 5px;
+
+   li {
+    margin-top: 12px;
+    display: inline-block;
+    width: 160px;
+   }
+  }
+
+  .types,
+  .services {
+   display: inline-block;
+   vertical-align: top;
+  }
+
+  .types {
+   width: 160px;
+   margin-right: 90px;
+  }
+
+  .services {
+   width: 600px;
+  }
 }
 
 .connect a {
@@ -403,13 +420,20 @@ section {
       display: block;
       float: left;
     }
+    p.no-background {
+      background: none;
+
+      a {
+        text-decoration: underline;
+      }
+    }
     p.first-crumb {
       padding-left: 20px;
     }
     a {
       display: inline;
     }
-    a:after {
+    a:not(.no-background):after {
       content: " ";
       display: block;
       width: 0;
@@ -423,7 +447,7 @@ section {
       left: 100%;
       z-index: 2;
     }
-    a:before {
+    a:not(.no-background):before {
        content: " ";
        display: block;
        width: 0;
@@ -443,25 +467,28 @@ section {
 
 /* app cards */
 .app-card {
-  width: 300px;
-  height: 124px;
+  width: 360px;
+  height: 213px;
   border: solid 1px #eaeaea;
   padding: 6px;
-  margin: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 0;
+  margin-right: 20px;
   float: left;
   overflow: hidden;
   cursor: pointer;
 
   .screenshot img {
-    width: 124px;
-    height: 124px;
+    width: 160px;
+    height: 160px;
     background-color: #fff;
   }
 
   .left-side {
     float: left;
     position: relative;
-    width: 124px;
+    width: 160px;
 
     .screenshot {
       position: absolute;
@@ -472,9 +499,9 @@ section {
 
   .app-info {
     float: right;
-    width: 160px;
+    width: 190px;
     position: relative;
-    height: 136px;
+    height: 160px;
 
     p {
       margin: 0px 0px 2px 0px;
@@ -494,17 +521,15 @@ section {
       margin-top: 5px;
     }
   }
+
+  .bottom {
+   font-size: 16px;
+   text-align: center;
+   padding-top: 18px;
+   clear: both;
+  }
 }
 
 .app-card:hover {
   .gradient-hover;
-}
-
-input[type=button].install {
-  color: white;
-  background-color: #F7931E;
-  border: 0px;
-  border-radius: 3px;
-  font-weight: bold;
-  cursor: pointer;
 }

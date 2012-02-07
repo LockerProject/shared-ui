@@ -24,6 +24,22 @@ function generateAppDetailsHtml(app, callback) {
   });
 }
 
+function generateAppFilters(callback) {
+  registry.getAllConnectors(function(connectors, success) {
+    var connectorsArray = [];
+
+    for (var connector in connectors) {
+      if (connectors.hasOwnProperty(connector)) {
+        connectorsArray.push(connectors[connector]);
+      }
+    }
+
+    dust.render('filters', {connectors:connectorsArray}, function(err, html) {
+      callback(html);
+    });
+  });
+}
+
 function generateBreadCrumbs(breadcrumbs, callback) {
   dust.render('breadcrumbs', breadcrumbs, function(err, appHtml) {
     callback(appHtml);

@@ -4,29 +4,23 @@
       <img src="https://burrow.singly.com/registry/{app.name}/screenshot.png">
     </div>
     <div class="full-app-info">
-      {?app.actions}
-        <div class='action-buttons'>
-          {?app.actions.add}
-            <input type='button' id='{app.name}' class='install' value='+ add to account'>
-          {:else}
-            <input disabled type='button' value='added'>
-          {/app.actions.add}
-              <!-- <a href="#" class="share-button twitter">TWEET THIS</a>
-              <a href="#" class="share-button facebook">SHARE IT</a> -->
-        </div>
-      {/app.actions}
       <p class="title">{app.repository.title}</p>
+
       <p class="author"><a class="orange iframeLink" href="#" data-id="AppGallery-Author?author={app.author.name}">by {app.author.name}</a></p>
-        <p class="uses">
-          {?app.repository.uses.types}Uses
-            {#app.repository.uses.types}
-              <a class="blue iframeLink" href="#" data-id="AppGallery-Filter?
-              types={.}">{.}</a>{@sep} + {/sep}
-            {/app.repository.uses.types}
-          {/app.repository.uses.types}
-        </p>
+
       <div class="description">{app.description}</div>
-      <div class="last-update">last updated {app.updated}</div>
+
+      {?app.actions}
+      <div class='action-buttons'>
+       {?app.actions}
+       {?app.actions.add}
+        <input type='button' id='{app.repository.handle}' class='install action-button' value='+ADD TO ACCOUNT' />
+       {:else}
+        <input type='button' disabled='disabled' class='action-button' value='+ADDED TO ACCOUNT' />
+       {/app.actions.add}
+       {/app.actions}
+      </div>
+      {/app.actions}
 
       {^app.actions}
         <div id="access-form">
