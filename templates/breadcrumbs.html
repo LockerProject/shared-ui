@@ -1,17 +1,28 @@
 <ul class="breadcrumb">
-  <li><p class='first-crumb'><a class="iframeLink" href="#" data-id="AppGallery-Featured">App Gallery</a></p></li>
-    <li><p>
-      {#app}
-        <a class="blue iframeLink" href="#" data-id="AppGallery-Details?app={name}">{repository.title}</a>
-      {/app}
-      {?filters}apps that use 
-        {#filters}
-          <a class="blue iframeLink" href="#" data-id="AppGallery-Filter?
-          {#type}types={type}{/type}{#service}services={service}{/service}">{name}</a>{@sep} + {/sep}
-        {/filters}
-      {/filters}
-      {#author}
-        <a class="blue iframeLink" href="#" data-id="AppGallery-Author?author={author}">by {author}</a>
-      {/author}
-    </p></li><p></p>
+ <li><p class='first-crumb'><a class="iframeLink" href="#" data-id="AppGallery-Featured">App Gallery</a></p></li>
+ <li>
+  {#app}
+   <p>
+    <a class="blue iframeLink" href="#" data-id="AppGallery-Details?app={name}">{repository.title}</a>
+   </p>
+  {/app}
+  {?filters}
+   <p>
+   {#filters}
+    <a class="blue iframeLink" href="#" data-id="AppGallery-Filter?
+     {#type}types={type}{/type}{#service}services={service}{/service}">{name}</a>{@sep} + {/sep}
+   {/filters}
+   </p>
+  {/filters}
+  {#author}
+   <p>
+    <a class="blue iframeLink" href="#" data-id="AppGallery-Author?author={author}">by {author}</a>
+   </p>
+  {/author}
+  {?filter}
+   <p class="no-background">
+    <a class="no-background orange filter-visibility" href="#">Hide Filters</a>
+   </p>
+  {/filter}
+ </li>
 </ul>
