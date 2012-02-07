@@ -1,3 +1,4 @@
+#!/bin/bash
 dir="$( dirname "${BASH_SOURCE[0]}" )"
 templatesDir="${dir}/../../templates"
 if [ -d ${templatesDir} ]
