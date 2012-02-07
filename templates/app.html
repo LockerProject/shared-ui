@@ -10,10 +10,19 @@
         <div class="provider-icons">
         {#app.repository.uses.services}
         <a class="iframeLink" href="#" data-id="AppGallery-Filter?services={.}">
-         <img src="img/icons/24px/{.}.png" alt="{.}" title="{.}" /></a>
+         <img src="img/icons/32px/{.}.png" alt="{.}" title="{.}" /></a>
         {/app.repository.uses.services}
         </div>
       {/app.repository.uses.services}
     </p>
+  </div>
+  <div class="bottom">
+   {?app.actions}
+   {?app.actions.add}
+    <input type='button' id='{app.repository.handle}' class='install action-button' value='+ADD TO ACCOUNT' />
+   {:else}
+    <input type='button' disabled='disabled' class='action-button' value='+ADDED TO ACCOUNT' />
+   {/app.actions.add}
+   {/app.actions}
   </div>
 </div>
