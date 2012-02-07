@@ -1,6 +1,8 @@
-if [ -d ../../templates ]
+dir="$( dirname "${BASH_SOURCE[0]}" )"
+templatesDir="${dir}/../../templates"
+if [ -d ${templatesDir} ]
 then
-    node compile.js *.html ../../templates/*.html
+    node ${dir}/compile.js ${dir}/*.html ${templatesDir}/*.html
 else
-    node compile.js *.html
+    node ${dir}/compile.js ${dir}/*.html
 fi
