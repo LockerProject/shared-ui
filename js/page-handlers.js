@@ -32,7 +32,8 @@ $(document).ready(function() {
 
   // Supports lazy loading of app cards
   $(window).scroll(function(e) {
-    if(getRowsBelowFold() - getAppCardRows() < 0 && getCurrentSection() === 'Featured') getFeaturedPage();
+    if(getRowsBelowFold() - getAppCardRows() < 0 && getCurrentSection() === 'Featured')
+      getFeaturedPage();
   });
 });
 
@@ -69,12 +70,20 @@ function filterCheckboxClick(element) {
 
 function loadDiv(app) {
   var info = splitApp(app);
+  app = info.app;
+
+  // Check that the hash already exists before we load the app
+  // to avoid loading it twice
+  if (window.location.hash.substring(1).indexOf(app) !== 0) {
+    window.location.hash = app;
+
+    return;
+  }
+
   $('.app-container').hide();
   $('.app-container#appDiv').show();
   $('.iframeLink,.your-apps,header div.nav a').removeClass('blue');
   $(".selected-section").removeClass('selected-section');
-  app = info.app;
-  window.location.hash = info.app;
   $('.iframeLink[data-id="' + info.app + '"]').addClass('blue');
   $('header div a[data-id="' + info.topSection + '"]').addClass('blue');
   $(".sidenav #" + info.topSection).addClass('selected-section');
@@ -92,14 +101,14 @@ function loadDiv(app) {
 
 function splitApp(app) {
   var appTmp = app;
-  
+
   var params = '';
   var ndx = app.indexOf('?');
   if (ndx != -1) {
     params = app.substring(ndx + 1);
     app = app.substring(0, ndx);
   }
-  
+
   var index = app.indexOf('-');
   var topSection = app;
   var subSection;
@@ -126,6 +135,7 @@ function splitApp(app) {
 handlers.AppGallery = {};
 handlers.AppGallery.Featured = function() {
   $('#AppGallery #Featured').html('');
+
   showLoading('Featured');
 
   generateBreadCrumbs({filter: true}, function(breadcrumbHTML) {
@@ -135,7 +145,8 @@ handlers.AppGallery.Featured = function() {
 
     generateAppFilters(function(filterHTML) {
       $('#AppGallery #Featured').append(filterHTML);
-        getFeaturedPage();
+
+      getFeaturedPage();
     });
   });
 }
@@ -213,7 +224,7 @@ handlers.AppGallery.Filter = function(params) {
 
         generateAppsHtml(apps, function(html) {
           if (!html) {
-            $('#AppGallery #Filter').append("<div id='no-results'>No app like that exists... yet. Why don't you <a href='develop' class='orange'>create the first</a>?</div>");
+            $('#AppGallery #Filter').append("<div id='no-results'>No app like that exists... yet. Why don't you <a href='develop#Develop-BuildAnApp' class='orange'>create the first</a>?</div>");
           } else {
             $('#AppGallery #Filter').append(html);
           }
