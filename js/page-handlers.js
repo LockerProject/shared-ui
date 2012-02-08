@@ -1,6 +1,6 @@
 var prettyNames = {
-  gcontacts : 'Google Contacts',
-}
+  gcontacts : 'Google Contacts'
+};
 
 var handlers = {};
 
@@ -32,8 +32,7 @@ $(document).ready(function() {
 
   // Supports lazy loading of app cards
   $(window).scroll(function(e) {
-    if(getRowsBelowFold() - getAppCardRows() < 0 && getCurrentSection() === 'Featured')
-      getFeaturedPage();
+    if(getRowsBelowFold() - getAppCardRows() < 0 && getCurrentSection() === 'Featured') getFeaturedPage();
   });
 });
 
@@ -149,7 +148,7 @@ handlers.AppGallery.Featured = function() {
       getFeaturedPage();
     });
   });
-}
+};
 
 var gettingPage = false;
 function getFeaturedPage(showsLoading) {
@@ -173,7 +172,7 @@ handlers.AppGallery.Author = function(params) {
   generateBreadCrumbs({author:params.author},function(breadcrumbHTML) {
     getAuthorPage(params, breadcrumbHTML);
   });
-}
+};
 
 function getAuthorPage(params, breadcrumbHTML) {
   registry.getByAuthor(params.author, function(appsObj) {
@@ -202,9 +201,8 @@ handlers.AppGallery.Filter = function(params) {
     var breadcrumbs = [];
 
     for(var i in appsObj) apps.push(appsObj[i]);
-
-    for(var i in filters.types) breadcrumbs.push({type:filters.types[i], name:prettyName(filters.types[i])});
-    for(var i in filters.services) breadcrumbs.push({service:filters.services[i], name:prettyName(filters.services[i])});
+    for(var j in filters.types) breadcrumbs.push({type:filters.types[j], name:prettyName(filters.types[j])});
+    for(var k in filters.services) breadcrumbs.push({service:filters.services[k], name:prettyName(filters.services[k])});
 
     generateBreadCrumbs({filter:true, filters:breadcrumbs}, function(breadcrumbHTML) {
       clearLoading('Filter');
@@ -218,8 +216,8 @@ handlers.AppGallery.Filter = function(params) {
           $('#AppGallery #Filter input[name=' + filters.types[i] +']').prop('checked', true);
         }
 
-        for(var i in filters.services) {
-          $('#AppGallery #Filter input[name=' + filters.services[i] + ']').prop('checked', true);
+        for(var j in filters.services) {
+          $('#AppGallery #Filter input[name=' + filters.services[j] + ']').prop('checked', true);
         }
 
         generateAppsHtml(apps, function(html) {
@@ -232,7 +230,7 @@ handlers.AppGallery.Filter = function(params) {
       });
     });
   });
-}
+};
 
 handlers.AppGallery.Details = function(params) {
   registry.getApp(params.app, function(app) {
@@ -243,7 +241,7 @@ handlers.AppGallery.Details = function(params) {
       });
     });
   });
-}
+};
 
 function prettyName(str) {
   return prettyNames[str] || capitalizeFirstLetter(str);
@@ -255,7 +253,7 @@ function capitalizeFirstLetter(str) {
 
 // lazy loading
 var loadedCallback = {
-  
+
 };
 
 function getPage() {
