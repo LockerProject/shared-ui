@@ -2,6 +2,7 @@ var baseUrl = "https://burrow.singly.com/registry/_design";
 
 var registry = {};
 var cache = {};
+registry.useMap = true;
 registry.getAllApps = function(params, callback) {
   if(!callback && typeof params === 'function') {
     callback = params;
@@ -70,6 +71,7 @@ registry.getAllConnectors = function(callback) {
 
 registry.getInstalledApps = function(callback, force) {
   if(cache.myApps !== undefined && !force) return callback(cache.myApps, true);
+  if (!registry.useMap) return callback({});
   $.getJSON('/map', function(map, success) {
     if(!success) return callback(map, success);
     var myApps = {};
@@ -128,6 +130,7 @@ registry.getMyAuthoredApps = function(callback, force) {
   // XXX: I don't like this here -- temas
   $.getJSON("/synclets/github/getCurrent/profile", function(body, success) {
       if (body.length > 0 && body[0].login) registry.localAuthor = body[0].login;
+      if (!registry.useMap) return callback({});
       $.getJSON('/map', function(map, success) {
         if(!success) return callback(map, success);
         var myApps = {};                                             // this isn't great
@@ -143,6 +146,7 @@ registry.getMyAuthoredApps = function(callback, force) {
 
 registry.getMyConnectors = function(callback, force) {
   if(cache.myConnectors !== undefined && !force) return callback(cache.myConnectors, true);
+  if (!registry.useMap) return callback({});
   $.getJSON('/map', function(map, success) {
     if(!success) return callback(map, success);
     var myConnectors = {};
@@ -156,6 +160,7 @@ registry.getMyConnectors = function(callback, force) {
 }
 
 registry.getMap = function(callback) {
+  if (!registry.useMap) return callback(undefined, {});
   $.getJSON('/map', function(map, success) {
     if(!success) return callback(new Error(map), success);
     return callback(undefined, map);
