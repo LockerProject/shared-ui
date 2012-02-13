@@ -93,7 +93,7 @@ function flagInstalled(apps, callback) {
   });
 }
 
-registry.getUnConnectedServices = function(uses, callback) {
+registry.getUnConnectedServices = function(uses, callback, force) {
   if(!uses) return callback([]);
   registry.getAllConnectors(function(allConnectors) {
     registry.getMyConnectors(function(myConnectors) {
@@ -108,7 +108,7 @@ registry.getUnConnectedServices = function(uses, callback) {
   });
 }
 
-registry.getConnectedServices = function(uses, callback) {
+registry.getConnectedServices = function(uses, callback, force) {
   if(!uses) return callback([]);
   registry.getAllConnectors(function(allConnectors) {
     registry.getMyConnectors(function(myConnectors) {
@@ -119,7 +119,7 @@ registry.getConnectedServices = function(uses, callback) {
         if(myConnectors[svcs[i]] && allConnectors[svcs[i]]) connected.push(allConnectors[svcs[i]]);
       }
       callback(connected);
-    });
+    }, force);
   });
 }
 
