@@ -234,6 +234,7 @@ handlers.AppGallery.Filter = function(params) {
 
 handlers.AppGallery.Details = function(params) {
   registry.getApp(params.app, function(app) {
+    doAppHeader(app.name, '#appDiv .app-header');
     generateBreadCrumbs({app:app},function(appHTML) {
       $('#AppGallery #Details').html(appHTML);
       generateAppDetailsHtml(app, function(html) {
@@ -242,6 +243,32 @@ handlers.AppGallery.Details = function(params) {
     });
   });
 };
+
+function doAppHeader(appName, element) {
+    registry.getMap(function(err, map) {
+        if(err || !map[appName]) return callback(err, map);
+        var app = map[appName];
+        // this {repository: app} stuff is because the map flattens the things in the repository field
+        // up to the top level, but these registry functions expect them to be inside of repository
+        registry.getConnectedServices(app.uses, function(connected) {
+            registry.getUnConnectedServices(app.uses, function(unconnected) {
+                registry.getMyAuthoredApps(function(myAuthoredApps) {
+                    var mine = myAuthoredApps[appName];
+                    if (mine) app.author = registry.localAuthor;
+                    dust.render('appHeader', {
+                      app:app,
+                      connected:connected,
+                      unconnected:unconnected,
+                      mine:mine
+                    }, function(err, appHtml) {
+                        $(element).html(appHtml);
+                        $(element).show();
+                    });
+                });
+            });
+        });
+    });
+}
 
 function prettyName(str) {
   return prettyNames[str] || capitalizeFirstLetter(str);
