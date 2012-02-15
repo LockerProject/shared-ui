@@ -244,14 +244,22 @@ handlers.AppGallery.Details = function(params) {
   });
 };
 
-function doAppHeader(appName, element) {
-    registry.getMap(function(err, map) {
-        if (err) throw err;
-        if (!map || !map[appName]) return; // We're not logged in: no map to use.
+function getAppInfo(appName, callback) {
+  registry.getMap(function(err, map) {
+    if(err) return callback(err);
+    if(map[appName]) return callback(undefined, map[appName]);
+    registry.getApp(appName, function(app) {
+      //XXX: ugh, map does a bunch of merging so need to "replicate" it here
+      for(var i in app.repository) app[i] = app.repository[i];
+      return callback(undefined, app);
+    });
+  });
+}
 
-        var app = map[appName];
-        // this {repository: app} stuff is because the map flattens the things in the repository field
-        // up to the top level, but these registry functions expect them to be inside of repository
+function doAppHeader(appName, element) {
+    getAppInfo(appName, function(err, app) {
+        // this cannot be caught anywhere so is simply for debugging
+        if (err) throw err;
         registry.getConnectedServices(app.uses, function(connected) {
             registry.getUnConnectedServices(app.uses, function(unconnected) {
                 registry.getMyAuthoredApps(function(myAuthoredApps) {
