@@ -246,7 +246,9 @@ handlers.AppGallery.Details = function(params) {
 
 function doAppHeader(appName, element) {
     registry.getMap(function(err, map) {
-        if(err || !map[appName]) return callback(err, map);
+        if (err) throw err;
+        if (!map || !map[appName]) return; // We're not logged in: no map to use.
+
         var app = map[appName];
         // this {repository: app} stuff is because the map flattens the things in the repository field
         // up to the top level, but these registry functions expect them to be inside of repository
