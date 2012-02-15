@@ -234,50 +234,56 @@ handlers.AppGallery.Filter = function(params) {
 
 handlers.AppGallery.Details = function(params) {
   registry.getApp(params.app, function(app) {
-    doAppHeader(app.name, '#appDiv .app-header');
     generateBreadCrumbs({app:app},function(appHTML) {
       $('#AppGallery #Details').html(appHTML);
       generateAppDetailsHtml(app, function(html) {
         $('#AppGallery #Details').append(html);
+        doAppHeader(app.name, '#appDiv .app-header');
       });
     });
   });
 };
 
 function getAppInfo(appName, callback) {
-  registry.getMap(function(err, map) {
-    if(err) return callback(err);
-    if(map[appName]) return callback(undefined, map[appName]);
-    registry.getApp(appName, function(app) {
-      //XXX: ugh, map does a bunch of merging so need to "replicate" it here
-      for(var i in app.repository) app[i] = app.repository[i];
-      return callback(undefined, app);
+  registry.getApp(appName, function(app) {
+    if(!app) {
+      return registry.getMap(function(err, map) {
+        if(err) return callback(err);
+        if(map[appName]) return callback(undefined, map[appName]);
+      });
+    }
+    //XXX: ugh, map does a bunch of merging so need to "replicate" it here
+    for(var i in app.repository) app[i] = app.repository[i];
+    return callback(undefined, app);
+  });
+}
+
+function getAppAndServices(appName, callback) {
+  getAppInfo(appName, function(err, app) {
+    // this cannot be caught anywhere so is simply for debugging
+    if (err) throw err;
+    registry.getConnectedServices(app.uses, function(connected) {
+      registry.getUnConnectedServices(app.uses, function(unconnected) {
+        return callback({
+          app:app,
+          connected:connected,
+          unconnected:unconnected});
+      });
     });
   });
 }
 
 function doAppHeader(appName, element) {
-    getAppInfo(appName, function(err, app) {
-        // this cannot be caught anywhere so is simply for debugging
-        if (err) throw err;
-        registry.getConnectedServices(app.uses, function(connected) {
-            registry.getUnConnectedServices(app.uses, function(unconnected) {
-                registry.getMyAuthoredApps(function(myAuthoredApps) {
-                    var mine = myAuthoredApps[appName];
-                    if (mine) app.author = registry.localAuthor;
-                    dust.render('appHeader', {
-                      app:app,
-                      connected:connected,
-                      unconnected:unconnected,
-                      mine:mine
-                    }, function(err, appHtml) {
-                        $(element).html(appHtml);
-                        $(element).show();
-                    });
-                });
-            });
-        });
+  getAppAndServices(appName, function(info) {
+    registry.getMyAuthoredApps(function(myAuthoredApps) {
+      info.mine = myAuthoredApps[appName];
+      if (info.mine) app.author = registry.localAuthor;
+      dust.render('appHeader', info, function(err, appHtml) {
+        $(element).html(appHtml);
+        $(element).show();
+      });
     });
+  });
 }
 
 function prettyName(str) {

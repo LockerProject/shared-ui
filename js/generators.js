@@ -2,8 +2,8 @@ function generateAppsHtml(apps, callback, html) {
   if(!html) html = '';
   if(!apps || apps.length <= 0) return callback(html);
   var app = apps.shift();
-  registry.getUnConnectedServices(app, function(unconnected) {
-    dust.render('app', {app:app, connect:unconnected}, function(err, appHtml) {
+  getAppAndServices(app._id, function(info) {
+    dust.render('app', info, function(err, appHtml) {
       html += appHtml;
       generateAppsHtml(apps, callback, html);
     });
