@@ -10,13 +10,13 @@
         <div class="provider-icons">
           <span class='connected-services'>
             {#connected}
-            <img class="installed" src="img/icons/32px/{.handle}.png" alt="{.handle}" title="{.handle}" />
+            <img class="installed" src="https://burrow.singly.com/registry/{.handle}/icon.png" alt="{.handle}" title="{.handle}" />
             {/connected}
           </span>
           <span class='unconnected-services'>
             {#unconnected}
             <a class="oauthLink" href="#" data-provider="{.handle}" data-height="{.oauthSize.height}" data-width="{.oauthSize.width}">
-            <img src="img/icons/32px/{.handle}.png" alt="{.handle}" title="{.handle}" /></a>
+            <img src="https://burrow.singly.com/registry/{.handle}/icon.png" alt="{.handle}" title="{.handle}" /></a>
             {/unconnected}
           </span>
         </div>
