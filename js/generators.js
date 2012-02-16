@@ -18,7 +18,7 @@ function generateAppDetailsHtml(app, callback) {
   //     app.repository.uses.types = types;
   // }
   registry.getUnConnectedServices(app, function(unconnected) {
-    dust.render('appDetails', {app:app, connect:unconnected}, function(err, appHtml) {
+    dust.render('appDetails', {app:app, connect:unconnected, signupAvailable:signupAvailable}, function(err, appHtml) {
       callback(appHtml);
     });
   });

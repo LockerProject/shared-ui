@@ -26,41 +26,77 @@
 
       {^app.actions}
         <div id="access-form">
-          <div class="register">
-            <div class="signin">
-              <h1>
-                We're open to developers!
-              </h1>
-              <img src="img/logos/github.png" alt="Github Logo" />
-              <a href="/auth/github" class="action-button">
-                Sign in with Github
-              </a>
-            </div>
-            <ul class="icons clearfix">
-              <li><img src="img/icons/32px/instagram.png" /></li>
-              <li><img src="img/icons/32px/rdio.png" /></li>
-              <li><img src="img/icons/32px/pandora.png" /></li>
-              <li><img src="img/icons/32px/lastfm.png" /></li>
-              <li><img src="img/icons/32px/facebook.png" /></li>
-              <li><img src="img/icons/32px/flickr.png" /></li>
-              <li><img src="img/icons/32px/github.png" /></li>
-              <li><img src="img/icons/32px/google.png" /></li>
-              <li><img src="img/icons/32px/twitter.png" /></li>
-              <li><img src="img/icons/32px/foursquare.png" /></li>
-            </ul>
-            <div class="signup">
-              <p>
-                Not a developer? Sign up for early access!
-              </p>
-              <form class='signup-form' action="signup_for_beta" method="get"
-                    accept-charset="utf-8">
-                <input tabindex='20' type='text' name='email' value=''
-                       placeholder='Email' />
-                <input tabindex='23' type='submit' class='action-button sign-up'
-                       value='Request Access'>
-                <div class="signup-errors"></div>
-              </form>
-            </div>
+          <div class='register'>
+            {?signupAvailable}
+            <span class='signin-github'>
+              <div class='signin'>
+                <h1>
+                  We're open to developers!
+                </h1>
+                <img src='img/logos/github.png' alt='Github Logo' />
+                <a href='/auth/github' class='action-button'>
+                  Sign in with Github
+                </a>
+              </div>
+              <ul class='icons clearfix'>
+                <li><img src='img/icons/32px/instagram.png' /></li>
+                <li><img src='img/icons/32px/rdio.png' /></li>
+                <li><img src='img/icons/32px/pandora.png' /></li>
+                <li><img src='img/icons/32px/lastfm.png' /></li>
+                <li><img src='img/icons/32px/facebook.png' /></li>
+                <li><img src='img/icons/32px/flickr.png' /></li>
+                <li><img src='img/icons/32px/github.png' /></li>
+                <li><img src='img/icons/32px/google.png' /></li>
+                <li><img src='img/icons/32px/twitter.png' /></li>
+                <li><img src='img/icons/32px/foursquare.png' /></li>
+              </ul>
+              <div class='signup'>
+                <h2>
+                  Not a developer? Sign up for early access!
+                </h2>
+                <form class='signup-form' action='signup_for_beta' method='get'
+                      accept-charset='utf-8'>
+                  <input tabindex='20' type='text' name='email' value=''
+                         placeholder='Email' />
+                  <input tabindex='23' type='submit' class='action-button sign-up'
+                         value='Request Access'>
+                  <div class='signup-errors'></div>
+                </form>
+              </div>
+            </span>
+            {:else}
+            <span class='signin-nogithub'>
+              <div class='signup'>
+                <h2>
+                  We're only taking requests for accounts currently.
+                </h2>
+                <form class='signup-form' action='signup_for_beta' method='get'
+                      accept-charset='utf-8'>
+                  <input tabindex='20' type='text' name='email' value=''
+                         placeholder='Email' />
+                  <input tabindex='22' type='text' name='github' value=''
+                        placeholder='GitHub' />
+                  <input tabindex='23' type='submit' class='action-button sign-up'
+                         value='Request Access'><br>
+                  <input tabindex='22' type='checkbox' name='developer'/>
+                  <label for='developer'> I'm a developer!</label>
+                  <div class='signup-errors'></div>
+                </form>
+              </div>
+              <ul class='icons clearfix'>
+                <li><img src='img/icons/32px/instagram.png' /></li>
+                <li><img src='img/icons/32px/rdio.png' /></li>
+                <li><img src='img/icons/32px/pandora.png' /></li>
+                <li><img src='img/icons/32px/lastfm.png' /></li>
+                <li><img src='img/icons/32px/facebook.png' /></li>
+                <li><img src='img/icons/32px/flickr.png' /></li>
+                <li><img src='img/icons/32px/github.png' /></li>
+                <li><img src='img/icons/32px/google.png' /></li>
+                <li><img src='img/icons/32px/twitter.png' /></li>
+                <li><img src='img/icons/32px/foursquare.png' /></li>
+              </ul>
+            </span>
+            {/signupAvailable}
           </div>
         </div>
       {/app.actions}
