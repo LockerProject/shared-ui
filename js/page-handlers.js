@@ -253,7 +253,7 @@ function getAppInfo(appName, callback) {
       });
     }
     //XXX: ugh, map does a bunch of merging so need to "replicate" it here
-    for(var i in app.repository) app[i] = app.repository[i];
+    for(var i in app.repository) if(!app[i] && app.repository[i]) app[i] = app.repository[i];
     return callback(undefined, app);
   });
 }
