@@ -1,7 +1,7 @@
 <div class="app-header"></div>
 
 <span>
-  <div class="full-app-details gradient">
+  <div class="full-app-details">
     <div class="screenshot-container">
       <img src="https://burrow.singly.com/registry/{app.name}/screenshot.png">
     </div>
@@ -26,17 +26,42 @@
 
       {^app.actions}
         <div id="access-form">
-          <span>
-            <h3>Get access to this app!</h3>
-            <form class='signup-form' action="signup_for_beta" method="get" accept-charset="utf-8">
-              <div class='signup-errors'></div>
-              <input tabindex='40' type='text' name='email' value='' placeholder='Email' />{~n}
-              <input tabindex='42' type='text' name='github' value='' placeholder='GitHub' />{~n}
-              <input tabindex='41' type='checkbox' name='developer' id='developer' />
-              <label for='developer'>I'm a developer!</label>{~n}
-              <input tabindex='43' type='submit' value='&nbsp;'>
-            </form>
-          </span>
+          <div class="register">
+            <div class="signin">
+              <h1>
+                We're open to developers!
+              </h1>
+              <img src="img/logos/github.png" alt="Github Logo" />
+              <a href="/auth/github" class="action-button">
+                Sign in with Github
+              </a>
+            </div>
+            <ul class="icons clearfix">
+              <li><img src="img/icons/32px/instagram.png" /></li>
+              <li><img src="img/icons/32px/rdio.png" /></li>
+              <li><img src="img/icons/32px/pandora.png" /></li>
+              <li><img src="img/icons/32px/lastfm.png" /></li>
+              <li><img src="img/icons/32px/facebook.png" /></li>
+              <li><img src="img/icons/32px/flickr.png" /></li>
+              <li><img src="img/icons/32px/github.png" /></li>
+              <li><img src="img/icons/32px/google.png" /></li>
+              <li><img src="img/icons/32px/twitter.png" /></li>
+              <li><img src="img/icons/32px/foursquare.png" /></li>
+            </ul>
+            <div class="signup">
+              <p>
+                Not a developer? Sign up for early access!
+              </p>
+              <form class='signup-form' action="signup_for_beta" method="get"
+                    accept-charset="utf-8">
+                <input tabindex='20' type='text' name='email' value=''
+                       placeholder='Email' />
+                <input tabindex='23' type='submit' class='action-button sign-up'
+                       value='Request Access'>
+                <div class="signup-errors"></div>
+              </form>
+            </div>
+          </div>
         </div>
       {/app.actions}
     </div>
