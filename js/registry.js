@@ -129,7 +129,7 @@ registry.getMyAuthoredApps = function(callback, force) {
   if(cache.myAuthoredApps !== undefined && !force) return callback(cache.myAuthoredApps, true);
   // XXX: I don't like this here -- temas
   $.getJSON("/synclets/github/getCurrent/profile", function(body, success) {
-      if (body.length > 0 && body[0].login) registry.localAuthor = body[0].login;
+      if (body.length > 0 && body[0].login) registry.localAuthor = {name: body[0].login};
       if (!registry.useMap) return callback({});
       $.getJSON('/map', function(map, success) {
         if(!success) return callback(map, success);
@@ -137,7 +137,7 @@ registry.getMyAuthoredApps = function(callback, force) {
         for(var i in map) if(map[i].type === 'app' && map[i].srcdir.indexOf('Me/github/') === 0) myApps[i] = map[i];
         cache.myAuthoredApps = myApps;
         if(typeof callback === 'function') callback(myApps, success);
-      }).error(function() {  
+      }).error(function() {
         cache.myAuthoredApps = null;
         if(typeof callback === 'function') callback(null);
       });
@@ -153,7 +153,7 @@ registry.getMyConnectors = function(callback, force) {
     for(var i in map) if(map[i].type === 'connector' && map[i].authed) myConnectors[i] = map[i];
     cache.myConnectors = myConnectors;
     if(typeof callback === 'function') callback(myConnectors, success);
-  }).error(function() {  
+  }).error(function() {
     cache.myConnectors = null;
     if(typeof callback === 'function') callback(null);
   });
