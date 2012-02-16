@@ -277,7 +277,7 @@ function doAppHeader(appName, element) {
   getAppAndServices(appName, function(info) {
     registry.getMyAuthoredApps(function(myAuthoredApps) {
       info.mine = myAuthoredApps[appName];
-      if (info.mine) app.author = registry.localAuthor;
+      if (info.mine) info.app.author = registry.localAuthor;
       dust.render('appHeader', info, function(err, appHtml) {
         $(element).html(appHtml);
         $(element).show();
