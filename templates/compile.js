@@ -10,4 +10,4 @@ for(var i = 2; i < process.argv.length; i++) {
   compiled += dust.compile(text, name) + '\n';
 }
 
-fs.writeFileSync(__dirname + '/../js/compiled_templates.js', compiled);
+process.stdout.write(compiled);
