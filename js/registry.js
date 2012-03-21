@@ -27,11 +27,9 @@ registry.getAllApps = function(params, callback) {
 var getJSON;
 var request;
 if (typeof jQuery === 'function') {
-  getJSON = function(url, params, callback) {
-    jQuery.getJSON(url, params, callback);
-  };
+  getJSON = jQuery.getJSON;
 } else if (typeof require === 'function') {
-  var request = require('request');
+  request = require('request');
   var querystring = require('querystring');
   getJSON = function(url, params, callback) {
     if (typeof params === 'function') {
