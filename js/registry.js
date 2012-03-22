@@ -166,17 +166,17 @@ registry.getMyAuthoredApps = function(callback, force) {
 };
 
 registry.getMyConnectors = function(callback, force) {
-  if(cache.myConnectors !== undefined && !force) return callback(cache.myConnectors, true);
+  if (cache.myConnectors !== undefined && !force) return callback(cache.myConnectors, true);
   if (!registry.useMap) return callback({});
   getJSON('/map', function(map, success) {
-    if(!success) return callback(map, success);
+    if (!success) return callback(map, success);
     var myConnectors = {};
     for(var i in map) if(map[i].type === 'connector' && map[i].authed) myConnectors[i] = map[i];
     cache.myConnectors = myConnectors;
-    if(typeof callback === 'function') callback(myConnectors, success);
+    if (typeof callback === 'function') callback(myConnectors, success);
   }).error(function() {
     cache.myConnectors = null;
-    if(typeof callback === 'function') callback(null);
+    if (typeof callback === 'function') callback(null);
   });
 };
 
